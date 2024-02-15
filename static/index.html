@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body>
+        <header class="bg-blue-800 text-white py-2 mb-4">
+            <div class="max-w-[900px] mx-auto flex items-center gap-6 px-6">
+                <h1 class="text-xl font-bold font-mono">Blog</h1>
+
+                <nav>
+                    <ul class="flex font-mono text-sm">
+                        <li><a href="/blogs">blogs</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <!--  -->
+
+        <main class="p-6 max-w-[900px] mx-auto">
+            <h1 class="text-2xl font-bold font-mono mb-6">Write</h1>
+
+            <form
+                action="/blogs"
+                method="post"
+                class="border border-slate-200 p-4 rounded mx-auto flex flex-col shadow"
+            >
+                <input
+                    type="text"
+                    class="text-2xl text-slate-800 focus:outline-none focus:ring-0 focus:ring-black p-0.5 border-none border-slate-500 w-full"
+                    placeholder="Title"
+                    id="title"
+                    name="title"
+                />
+                <input
+                    type="text"
+                    class="text-slate-600 border-none border-black rounded focus:outline-none focus:ring-0 focus:ring-black p-0.5"
+                    placeholder="Author"
+                    id="author"
+                    name="author"
+                />
+
+                <div class="relative">
+                    <textarea
+                        name="content"
+                        id="content"
+                        cols="30"
+                        rows="10"
+                        class="border border-slate-400 rounded p-2 focus:outline-none w-full mt-4 resize-none"
+                    ></textarea>
+
+                    <button
+                        type="submit"
+                        class="absolute right-4 bottom-4 px-4 py-1.5 rounded bg-blue-600 text-white"
+                    >
+                        Post
+                    </button>
+                </div>
+            </form>
+            <div id="blogs"></div>
+        </main>
+
+        <script>
+            let inputField = document.getElementById("content") // get textarea object
+
+            inputField.onkeydown = (e) => {
+                if (e.keyCode === 9) {
+                    inputField.value += "    " // add 4 spaces
+                    return false //prevent default action
+                }
+            }
+
+            // fetch GET blogs func
+            async function getBlogs() {
+                let res = await fetch("/blogs")
+                let data = await res.json()
+                console.log(data)
+
+                let blogs = document.getElementById("blogs")
+                blogs.innerHTML = data
+                    .map((blog) => {
+                        date = new Date(blog.created_at).toDateString()
+                        return `
+                            <div class="border border-slate-200 p-4 rounded mb-4">
+                                <h2 class="text-xl font-bold font-mono">${blog.title}</h2>
+                                <p class="text-slate-400 flex justify-between mb-2">
+                                    <span>${blog.author} </span>
+                                    <span>${date}</span>
+                                </p>
+                                <p class="text-slate-600">${blog.content}</p>
+                            </div>
+                        `
+                    })
+                    .join("")
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                getBlogs()
+            })
+        </script>
+    </body>
+</html>
