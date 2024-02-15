@@ -19,12 +19,12 @@ func InitAPIRoutes(mux *http.ServeMux) {
 
 
 func GetBlogs(w http.ResponseWriter, r *http.Request) {
-	Req.Println("GET /blogs")
+	Req.Println("GET /api/blogs")
 
 	blogs, err := db.GetBlogs()
 
 	if err != nil {
-
+		Error.Println(err.Error())
 	}
 
 	if blogs == nil {
@@ -38,11 +38,13 @@ func GetBlogs(w http.ResponseWriter, r *http.Request) {
 
 func GetBlog(w http.ResponseWriter, r *http.Request) {
 	slug := r.PathValue("id")
-	Req.Println("GET /blogs/" + slug)
+	Req.Println("GET /api/blogs/" + slug)
 
 	id, err := strconv.Atoi(slug)
 
-	if err != nil {}
+	if err != nil {
+		Error.Println(err.Error())
+	}
 
 	blog, err := db.GetBlog(id)
 
@@ -56,7 +58,7 @@ func GetBlog(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateBlog(w http.ResponseWriter, r *http.Request) {
-	Req.Println("POST /blogs")
+	Req.Println("POST /api/blogs")
 
 	err := r.ParseForm()
 

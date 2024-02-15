@@ -14,7 +14,7 @@ func main() {
 
 
 	// Setup routes
-	routes.InitBlogRoutes(mux)
+	routes.InitRoutes(mux)
 
 	// Connect to database
 	db, err := database.InitDB()

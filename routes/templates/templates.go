@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	db "goblog/database"
 	. "goblog/logger"
+	"html/template"
 	"net/http"
 	"strconv"
 )
@@ -15,13 +16,20 @@ func InitTemplateRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /blogs/{id}", GetBlog)
 	mux.HandleFunc("POST /blogs", CreateBlog)
 	mux.HandleFunc("DELETE /blogs/{id}", DeleteBlog)
-	mux.HandleFunc("GET /{slug...}", Catch)
+	// mux.HandleFunc("GET /{slug...}", Catch)
 }
 
 
 func Home(w http.ResponseWriter, r *http.Request) {
 	Req.Println("GET /")
-	http.ServeFile(w, r, "../static/index.html")
+	// http.ServeFile(w, r, "../static/index.html")
+
+	tmpl, err := template.New("name").Parse(`<h1>hi</h1>`)
+	if err != nil {
+		Error.Println(err)
+	}
+	tmpl.Execute(w, nil)
+
 }
 
 func Catch(w http.ResponseWriter, r *http.Request) {
@@ -40,7 +48,7 @@ func GetBlogs(w http.ResponseWriter, r *http.Request) {
 	blogs, err := db.GetBlogs()
 
 	if err != nil {
-
+		Error.Println(err.Error())
 	}
 
 	if blogs == nil {
@@ -58,7 +66,9 @@ func GetBlog(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.Atoi(slug)
 
-	if err != nil {}
+	if err != nil {
+		Error.Println(err.Error())
+	}
 
 	blog, err := db.GetBlog(id)
 
